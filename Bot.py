@@ -24,7 +24,8 @@ async def on_ready():
 
         await asyncio.sleep(20)
 
-        await client.change_presence(game=discord.Game(name='Meu prefixo é t!', type=2))
+        await client.change_presence(game=discord.Game(name='Musica com meu criador!', type=2)
+
 
         await asyncio.sleep(20)
 
@@ -54,7 +55,7 @@ async def on_member_remove(member):
 
    canal = client.get_channel("495700015801434122")
 
-   msg = "Adeus,Te vejo no paraiso! {}".format(member.mention)
+   msg = "Adeus,Te vejo no paraiso! {}".format(member.menion)
 
    await client.send_message(canal, msg)
 
