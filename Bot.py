@@ -131,7 +131,7 @@ async def reps(ctx):
          if rpg is None:
            await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema de coins, use !registro para se registrar!")
          else:
-         	moedas = rpg["reps"]
+         	reps = rpg["reps"]
          	await ctx.send(f"🌠 {ctx.author.mention}, você tem {reps} reputações.")
        except Exception as e:
            await ctx.send(f"[Erro] {e}")                 
@@ -158,7 +158,7 @@ async def addsobre(ctx, sobre: str=None):
 			if rpg is None:
 				await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema, use s!registro para se registrar!")
 			else:
-				sobre = int(rpg["sobre"])+ str(sobre)
+				sobre = str(rpg["sobre"])=str(sobre)
 				tutorial.rpg.update_one({"_id":str(ctx.author.id)}, {"$set":{"sobre":str(sobre)}})
 				await ctx.send(f"{ctx.author.mention}, setou a descrição `{sobre}`")
 		except Exception as e:
@@ -788,6 +788,5 @@ async def help(ctx):
 	except Exception as e:
 		await msg.delete()
 		print(repr(e))
-
 
 bot.run(str(os.environ.get('BOT_TOKEN')))
