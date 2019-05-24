@@ -85,6 +85,8 @@ async def ping(ctx):
     ping1.set_author(name=f'{ctx.message.author.display_name}', icon_url=f'{ctx.message.author.avatar_url}')
     await ping3.edit(embed=ping1)
     
+    
+semdesc= "Este Usuário Não Possui Descrição. Para Adicionar uma descrição digite `s!addsobre <descrição>`"   
 @bot.command(pass_context=True)
 async def registro(ctx):
        try:
@@ -93,13 +95,15 @@ async def registro(ctx):
          rpg = tutorial["rpg"]
          rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
          if rpg is None:
-            usuario = {"_id":str(ctx.author.id),"usuario":str(ctx.author.name), "coins":0}
+            usuario = {"_id":str(ctx.author.id),"usuario":str(ctx.author.name), "coins":0,"reps":0,"donator":False,"Caixa":0,"sobre":semdesc}
             tutorial.rpg.insert_one(usuario).inserted_id
             await ctx.send(f"Olá {ctx.author.mention}, você foi registrado no banco de dados com sucesso!")
          else:
            await ctx.send(f"Olá {ctx.author.mention}, você já está registrado no banco de dados!")
        except Exception as e:
            await ctx.send(f"[Erro] {e}")
+ 
+ 
  
  
 @bot.command(pass_context=True, aliases=['coins'])
@@ -113,36 +117,26 @@ async def saldo(ctx):
            await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema de coins, use !registro para se registrar!")
          else:
          	moedas = rpg["coins"]
-         	await ctx.send(f"Olá, {ctx.author.mention}, você tem {moedas} zcoins.")
+         	await ctx.send(f"Olá, {ctx.author.mention}, você tem {moedas} RyuCoins.")
        except Exception as e:
            await ctx.send(f"[Erro] {e}")
+     
+@bot.command(pass_context=True, aliases=['reputações', 'reputação'])
+async def reps(ctx):
+       try:
+         mongo = MongoClient(url)
+         tutorial = mongo["tutorial"]
+         rpg = tutorial["rpg"]
+         rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
+         if rpg is None:
+           await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema de coins, use !registro para se registrar!")
+         else:
+         	moedas = rpg["reps"]
+         	await ctx.send(f"🌠 {ctx.author.mention}, você tem {reps} reputações.")
+       except Exception as e:
+           await ctx.send(f"[Erro] {e}")                 
     
-@bot.command(pass_context=True, aliases=['topcoins'])
-async def coinstop(ctx):
-        try:
-        mongo = MongoClient(url)
-        tutorial = mongo["tutorial"]
-        rpg = tutorial["rpg"]
-        top = rpg.find().sort('coins', pymongo.DESCENDING).limit(1000)
-        valores = {}
-        users = {}
-        index = 1
-        texto = []
-        rank = []
-        for valor in top:
-          count = len(rank)
-          simb = "count°"
-          numero = f"{count}{simb}"
-          simbolo = str(numero).replace("0count°", "🥇 **1°**").replace("1count°","🥈 **2°**").replace("2count°","🥉 **3°**").replace("3count°","🏅 **4°**").replace("4count°","🏅 **5°**").replace("5count°","🏅 **6°**").replace("6count°","🏅 **7°**").replace("7count°","🏅 **8°**").replace("8count°","🏅 **9°**").replace("9count°","🏅 **10°**")
-          url = f"{simbolo} : <@{valor['_id']}> - ({valor['coins']})"
-          rank.append(url)
-           
 
-        url = "\n".join(rank)
-        embed=discord.Embed(description=url, color=0x7BCDE8)
-        embed.set_author(name="Top rank dos RyuCoins", icon_url=ctx.author.avatar_url_as())
-        embed.set_thumbnail(url="https://media.discordapp.net/attachments/519287277499973632/522607596851691524/icons8-leaderboard-100.png")
-        await ctx.send(embed=embed)
 		
 @bot.command(pass_context=True)
 async def servers(ctx):
@@ -150,6 +144,25 @@ async def servers(ctx):
 	await ctx.send("Estou conectado em " + str(len(bot.guilds)) + " servers:")
 	for x in range(len(servers)):
 		await ctx.send(" "+servers[x-1].name)
+		
+@bot.command(pass_context=True)
+async def addsobre(ctx, sobre: str=None):
+	if sobre is None:
+		await ctx.send(f'{ctx.author.mention}, Digite algo para ser sua descrição')
+	else:
+		try:
+			mongo = MongoClient(url)
+			tutorial = mongo["tutorial"]
+			rpg = tutorial["rpg"]
+			rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
+			if rpg is None:
+				await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema, use s!registro para se registrar!")
+			else:
+				sobre = int(rpg["sobre"])+ str(sobre)
+				tutorial.rpg.update_one({"_id":str(ctx.author.id)}, {"$set":{"sobre":str(sobre)}})
+				await ctx.send(f"{ctx.author.mention}, setou a descrição `{sobre}`")
+		except Exception as e:
+				await ctx.send(f"[Erro] {e}")		
 
 @bot.command(pass_context=True)
 @commands.is_owner()
@@ -775,5 +788,6 @@ async def help(ctx):
 	except Exception as e:
 		await msg.delete()
 		print(repr(e))
+
 
 bot.run(str(os.environ.get('BOT_TOKEN')))
