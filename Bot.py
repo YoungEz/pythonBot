@@ -118,7 +118,7 @@ async def saldo(ctx):
            await ctx.send(f"[Erro] {e}")
     
 @bot.command(pass_context=True, aliases=['topcoins'])
-async def coinstop(self, ctx):
+async def coinstop(ctx):
         mongo = MongoClient(url)
         tutorial = mongo["tutorial"]
         rpg = tutorial["rpg"]
@@ -177,7 +177,7 @@ async def daily(ctx):
           rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
           if rpg is None:
             await ctx.send('Você não esta registrado digite `s!registro` para se registrar')
-            cooldown.remove(ctx.author.id)
+        
           else:
               coins = random.randint(500, 1800)
               moedas = int(rpg["coins"])+ int(coins)
@@ -198,14 +198,14 @@ async def daily_error(ctx,error):
 @bot.command(pass_context=True)
 @commands.cooldown(1, 60*60*4, commands.BucketType.user)
 async def trabalhar(ctx):
-       try:   	  
-
+       try:
+          mongo = MongoClient(url)    
           tutorial = mongo["tutorial"]
           rpg = tutorial["rpg"]
           rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
           if rpg is None:
             await ctx.send('Você não esta registrado digite `s!registro` para se registrar')
-            cooldown.remove(ctx.author.id)
+          
           else:
               coins = random.randint(500, 1000)
               moedas = int(rpg["coins"])+ int(coins)
@@ -774,4 +774,5 @@ async def help(ctx):
 	except Exception as e:
 		await msg.delete()
 		print(repr(e))
+
 bot.run(str(os.environ.get('BOT_TOKEN')))
