@@ -119,6 +119,7 @@ async def saldo(ctx):
     
 @bot.command(pass_context=True, aliases=['topcoins'])
 async def coinstop(ctx):
+        try:
         mongo = MongoClient(url)
         tutorial = mongo["tutorial"]
         rpg = tutorial["rpg"]
