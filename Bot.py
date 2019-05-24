@@ -158,7 +158,7 @@ async def addsobre(ctx, sobre: str=None):
 			if rpg is None:
 				await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema, use s!registro para se registrar!")
 			else:
-				sobre = str(rpg["sobre"])=str(sobre)
+				sobre = str(rpg["sobre"]) + str(sobre)
 				tutorial.rpg.update_one({"_id":str(ctx.author.id)}, {"$set":{"sobre":str(sobre)}})
 				await ctx.send(f"{ctx.author.mention}, setou a descrição `{sobre}`")
 		except Exception as e:
