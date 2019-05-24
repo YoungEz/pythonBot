@@ -193,7 +193,15 @@ async def daily(ctx):
             await ctx.send('Você não esta registrado digite `s!registro` para se registrar')
             ctx.command.reset_cooldown(ctx)        
           else:
-              coins = random.randint(500, 1800)
+          	await msg.add_reaction('✔')
+          	coins = random.randint(500, 1800)
+          	msg = await ctx.send(f'{member.mention} Para receber `{coins}` de daily reaja com ✔')
+          	try:
+          		reaction, user = await bot.wait_for("reaction_add", timeout=360, check=lambda reaction, user: reaction.message.id == msg.id and user.id == ctx.author.id)
+          		emoji = str(reaction.emoji)
+			if emoji == '✔':
+				await msg.delete()
+
               moedas = int(rpg["coins"])+ int(coins)
               tutorial.rpg.update_one({"_id":str(ctx.author.id)}, {"$set":{"coins":int(moedas)}})
               await ctx.send(f"💸 {ctx.author.mention}, você ganhou {coins} ryuCoins diários.")
@@ -820,6 +828,6 @@ async def help(ctx):
 	except Exception as e:
 		await msg.delete()
 		print(repr(e))
-    
-    
+
+
 bot.run(str(os.environ.get('BOT_TOKEN')))
