@@ -154,7 +154,7 @@ async def canalw(ctx, canal: discord.TextChannel=None):
 				await ctx.send(f"[Erro] {e}") 
 
 @welbye.command(pass_context=True)
-async def welmsg(ctx, msg: str=None):
+async def welmsg(ctx, *, msg: str=None):
 	if msg is None:
 		return await ctx.send(f'{ctx.author.mention}, digite uma mensagem')
 	else:
