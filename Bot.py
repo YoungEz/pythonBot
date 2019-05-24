@@ -166,7 +166,7 @@ async def welmsg(ctx, msg: str=None):
 			if rpg is None:
 				await ctx.send(f"Olá {ctx.author.mention}, seu servidor não esta no meu sistema, use `s!welbye ativar` para adicionar seu servidor")
 			else:
-				user = member.mention
+				user = member.me
 				guild = guild.name
 				tutorial.rpg.update_one({"_id":str(ctx.guild.id)}, {"$set":{"mensagemWel":str(msg)}})
 				await ctx.send(f"{ctx.author.mention}, setou a mensagem `{msg}`")
