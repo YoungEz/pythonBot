@@ -25,7 +25,7 @@ from random import choice
 url = os.environ.get('URL')
 
 
-bot = commands.Bot('st!')
+bot = commands.Bot('st!', owner_id=528782261315698718)
 print (discord.__version__)
 
 
@@ -125,24 +125,78 @@ async def servers(ctx):
 	for x in range(len(servers)):
 		await ctx.send(" "+servers[x-1].name)
 
-@bot.command(pass_context=True, aliases=['pagar', 'dar'])
-async def pay(ctx, member: discord.Member=None, coins:int=None):
+@bot.command(pass_context=True)
+@commands.is_owner()
+async def setcoins(ctx, member:discord.Member=None, coins:int=None):
        try:
-          mongo = MongoClient(url)
-          shiryubot = mongo["shiryubot"]
-          test = shiryubot["test"]
-          test = shiryubot.test.find_one({"_id":str(member.id)})
-          if test is None:
-             await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema de coins, use !registro para se registrar!")
-          else:
-              moedas = int(test["coins"])+ int(coins)
-              shiryubot.test.update_one({"_id":str(member.id)}, {"$set":{"coins":int(moedas)}})
-              shiryubot.test.update_one({"_id":str(ctx.author.id)}, {"$remove":{"coins":int(moedas)}})
-              await ctx.send(f"Olá {ctx.author.mention}, você deu {coins} com sucesso para {member.mention}.")
-             
+         mongo = MongoClient(url)
+         tutorial = mongo["tutorial"]
+         rpg = tutorial["rpg"]
+         rpg = tutorial.rpg.find_one({"_id":str(member.id)})
+         if rpg is None:
+            await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema de coins, use s!registro para se registrar!")
+         else:
+             moedas = int(rpg["coins"])+ int(coins)
+             tutorial.rpg.update_one({"_id":str(member.id)}, {"$set":{"coins":int(moedas)}})
+             await ctx.send(f"💸 {ctx.author.mention}, setou {coins} com sucesso para {member.mention}.")
        except Exception as e:
            await ctx.send(f"[Erro] {e}")
-						
+
+@bot.command(pass_context=True)
+@commands.cooldown(1, 60*60*24, commands.BucketType.user)
+async def daily(ctx):
+       try:   	  
+         mongo = MongoClient(url)       
+          tutorial = mongo["tutorial"]
+          rpg = tutorial["rpg"]
+          rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
+          if rpg is None:
+            usuario = {"_id":str(ctx.author.id),"usuario":str(ctx.author.name), "coins":0}
+            tutorial.rpg.insert_one(usuario).inserted_id
+          else:
+              coins = random.randint(500, 1800)
+              moedas = int(rpg["coins"])+ int(coins)
+              tutorial.rpg.update_one({"_id":str(ctx.author.id)}, {"$set":{"coins":int(moedas)}})
+              await ctx.send(f"💸 {ctx.author.mention}, você ganhou {coins} ryuCoins diários.")
+       except Exception as e:
+           await ctx.send(f"[Erro] {e}")
+@daily.error
+async def daily_error(ctx,error):
+     if isinstance(error, discord.ext.commands.CommandOnCooldown):
+       min, sec = divmod(error.retry_after, 60)
+       h, min = divmod(min, 60)
+       if min == 0.0 and h == 0:
+           await ctx.send('**Espere `{0}` segundos para usar o comando novamente.**'.format(round(sec)))
+       else:
+           await ctx.send('**Espere `{0}` horas `{1}` minutos  e `{2}` segundos para usar o comando novamente.**'.format(round(h),round(min),round(sec)))						
+
+@bot.command(pass_context=True)
+@commands.cooldown(1, 60*60*4, commands.BucketType.user)
+async def trabalhar(ctx):
+       try:   	  
+         mongo = MongoClient(url)
+          tutorial = mongo["tutorial"]
+          rpg = tutorial["rpg"]
+          rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
+          if rpg is None:
+            usuario = {"_id":str(ctx.author.id),"usuario":str(ctx.author.name), "coins":0}
+            tutorial.rpg.insert_one(usuario).inserted_id
+          else:
+              coins = random.randint(500, 1000)
+              moedas = int(rpg["coins"])+ int(coins)
+              tutorial.rpg.update_one({"_id":str(ctx.author.id)}, {"$set":{"coins":int(moedas)}})
+              await ctx.send(f"💸 {ctx.author.mention}, você trabalhou e ganhou {coins} ryuCoins.")
+       except Exception as e:
+           await ctx.send(f"[Erro] {e}")
+@trabalhar.error
+async def trabalhar_error(ctx,error):
+     if isinstance(error, discord.ext.commands.CommandOnCooldown):
+       min, sec = divmod(error.retry_after, 60)
+       h, min = divmod(min, 60)
+       if min == 0.0 and h == 0:
+           await ctx.send('**Espere `{0}` segundos para usar o comando novamente.**'.format(round(sec)))
+       else:
+           await ctx.send('**Espere `{0}` horas `{1}` minutos  e `{2}` segundos para usar o comando novamente.**'.format(round(h),round(min),round(sec)))																																				
 @bot.command(pass_context=True)
 async def dog(ctx):
     '''Check out a random cute or funny dog!'''
@@ -696,5 +750,7 @@ async def help(ctx):
 		await msg.delete()
 		print(repr(e))
 
+
+bot.run('NTQwMTI5NTg2Mzc0MjQ2NDAy.XN_c8g.sv-L-oUx2uCmwzisg5RaiSMGvWc')
 
 bot.run(str(os.environ.get('BOT_TOKEN')))
