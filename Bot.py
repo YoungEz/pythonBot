@@ -174,7 +174,7 @@ async def daily_error(ctx,error):
 @commands.cooldown(1, 60*60*4, commands.BucketType.user)
 async def trabalhar(ctx):
        try:   	  
-         mongo = MongoClient(url)
+          mongo = MongoClient(url)
           tutorial = mongo["tutorial"]
           rpg = tutorial["rpg"]
           rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
