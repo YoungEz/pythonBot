@@ -146,7 +146,7 @@ async def setcoins(ctx, member:discord.Member=None, coins:int=None):
 @commands.cooldown(1, 60*60*24, commands.BucketType.user)
 async def daily(ctx):
        try:   	  
-         mongo = MongoClient(url)       
+          mongo = MongoClient(url)       
           tutorial = mongo["tutorial"]
           rpg = tutorial["rpg"]
           rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
