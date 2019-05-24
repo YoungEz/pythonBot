@@ -751,7 +751,7 @@ async def help(ctx):
 		print(repr(e))
 
 
-bo
+
 
 
 bot.run(str(os.environ.get('BOT_TOKEN')))
