@@ -182,7 +182,7 @@ async def on_member_join(member):
 		rpg = tutorial.rpg.find_one({"_id":str(member.guild.id)})	
 		mensagem = rpg["mensagemWel"]
 		id = rpg["canalWel"]
-		canal = bot.get_channel(id)
+		canal = bot.get_channel(f"{id}")
 		await canal.send(f"{mensagem}")
 	except Exception as e:
 		print(f"[Erro] {e}")       	
