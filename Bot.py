@@ -95,7 +95,7 @@ async def registro(ctx):
          rpg = tutorial["rpg"]
          rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
          if rpg is None:
-            usuario = {"_id":str(ctx.author.id),"usuario":str(ctx.author.name), "coins":0,"reps":0,"donator":False,"Caixa":0,"sobre":semdesc}
+            usuario = {"_id":str(ctx.author.id),"usuario":str(ctx.author.name), "coins":0,"reps":0,"donator":False,"CaixaB":0,"sobre":semdesc, "CaixaM":0, "CaixaE":0, "CaixaL":0}
             tutorial.rpg.insert_one(usuario).inserted_id
             await ctx.send(f"Olá {ctx.author.mention}, você foi registrado no banco de dados com sucesso!")
          else:
@@ -103,95 +103,7 @@ async def registro(ctx):
        except Exception as e:
            await ctx.send(f"[Erro] {e}")
            
-s = "Mensagem não definida"           
-n = "O Modulo Não Esta Ativo No Servidor"
-a = "Nenhum Canal Definido"
-@bot.group(aliases=['welcome'])
-async def welbye(ctx):
-	if ctx.invoked_subcommand is None:
-		embed = discord.Embed(title='Painel De Configuração Welcome', color=0xFF0000)
-		embed.add_field(name='st!welbye ativar', value='Ativa a função no servidor')
-		embed.add_field(name='st!welbye canal <canal>', value='Seleciona O Canal Onde A Mensagem Sera Enviada\nCanal Welcome Ativo: {canalWel.mention}\nCanal Adeus Ativo {canal.mention}\nExemplo: st!welbye canal #bem-vindo')
-		return await ctx.send(embed=embed)
 
-@welbye.command(pass_context=True)
-async def ativar(ctx):
-	if not ctx.author.guild_permissions.manage_guild:
-		return await ctx.send("🚨| Para executar este comando, você precisa da permissão de gerenciar servidor")
-	else:
-		try:
-			mongo = MongoClient(url)
-			tutorial = mongo["eventos"]
-			rpg = tutorial["welcome"]
-			rpg = tutorial.rpg.find_one({"_id":str(ctx.guild.id)})
-			if rpg is None:
-				servidorModulo = {"_id":str(ctx.guild.id),"nome":str(ctx.guild.name), "canalWelcome":a,"canalBye":a,"MensagemBye":s,"mensagemWel":s, "statusWel":n, "statusBye":n}
-				tutorial.rpg.insert_one(servidorModulo).inserted_id
-				canalWel = bot.get_channel("{canalWelcome}")
-				canal = bot.get_channel("{canalBye}")
-				await ctx.send(f"Olá {ctx.author.mention}, O Modulo de Welcome/Adeus foi ativado em seu servidor!")
-			else:
-				return await ctx.send(f"Olá {ctx.author.mention}, O Modulo De Welcome Ja Esta Ativo No Servidor")
-		except Exception as e:
-			await ctx.send(f"[Erro] {e}")		
-@welbye.command(pass_context=True)
-async def canalw(ctx, canal: discord.TextChannel=None):
-	if canal is None:
-		return await ctx.send(f'{ctx.author.mention}, mencione um canal')
-	else:
-		try:
-			mongo = MongoClient(url)
-			tutorial = mongo["eventos"]
-			rpg = tutorial["welcome"]
-			rpg = tutorial.rpg.find_one({"_id":str(ctx.guild.id)})
-			if rpg is None:
-				await ctx.send(f"Olá {ctx.author.mention}, seu servidor não esta no meu sistema, use `s!welbye ativar` para adicionar seu servidor")
-			else:
-				
-				tutorial.rpg.update_one({"_id":str(ctx.guild.id)}, {"$set":{"canalWel":str(canal.id)}})
-				await ctx.send(f"{ctx.author.mention}, Canal de Bem Vindo/Adeus Definido Em {canal.mention}")
-		except Exception as e:
-				await ctx.send(f"[Erro] {e}") 
-
-@welbye.command(pass_context=True)
-async def welmsg(ctx, *, msg: str=None):
-	if msg is None:
-		return await ctx.send(f'{ctx.author.mention}, digite uma mensagem')
-	else:
-		try:
-			mongo = MongoClient(url)
-			tutorial = mongo["eventos"]
-			rpg = tutorial["welcome"]
-			rpg = tutorial.rpg.find_one({"_id":str(ctx.guild.id)})
-			if rpg is None:
-				await ctx.send(f"Olá {ctx.author.mention}, seu servidor não esta no meu sistema, use `s!welbye ativar` para adicionar seu servidor")
-			else:
-			
-				
-				tutorial.rpg.update_one({"_id":str(ctx.guild.id)}, {"$set":{"mensagemWel":str(msg)}})
-				await ctx.send(f"{ctx.author.mention}, setou a mensagem `{msg}`")
-		except Exception as e:
-				await ctx.send(f"[Erro] {e}") 
-@bot.event
-async def on_member_join(member):
-	try:
-		
-		mongo = MongoClient(url)
-		tutorial = mongo["eventos"]
-		rpg = tutorial["welcome"]
-		rpg = tutorial.rpg.find_one({"_id":str(member.guild.id)})	
-		mensagem = rpg["mensagemWel"]
-		id = rpg["canalWel"]
-		canal = bot.get_channel(id)
-		await canal.send(mensagem)
-	except Exception as e:
-		print(f"[Erro] {e}")       	
-
-@bot.event
-async def on_member_remove(member):
-	mensagem = "mensagem teste"
-	canal = bot.get_channel(581586752460816474)
-	await canal.send(mensagem)	
 @bot.command(pass_context=True, aliases=['coins'])
 async def saldo(ctx):
        try:
@@ -208,17 +120,19 @@ async def saldo(ctx):
            await ctx.send(f"[Erro] {e}")
      
 @bot.command(pass_context=True, aliases=['reputações', 'reputação'])
-async def reps(ctx):
+async def reps(ctx, user: discord.User=None):
+	if user is None:
+		user = ctx.author
        try:
          mongo = MongoClient(url)
          tutorial = mongo["tutorial"]
          rpg = tutorial["rpg"]
-         rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
+         rpg = tutorial.rpg.find_one({"_id":str(user.id)})
          if rpg is None:
            await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema de coins, use !registro para se registrar!")
          else:
          	reps = rpg["reps"]
-         	await ctx.send(f"🌠 {ctx.author.mention}, você tem {reps} reputações.")
+         	await ctx.send(f"🌠 {user.mention},  tem {reps} reputações.")
        except Exception as e:
            await ctx.send(f"[Erro] {e}")                 
     
@@ -294,16 +208,20 @@ async def daily_error(ctx,error):
        if min == 0.0 and h == 0:
            await ctx.send('**Espere `{0}` segundos para usar o comando novamente.**'.format(round(sec)))
        else:
-           await ctx.send('**Espere `{0}` horas `{1}` minutos  e `{2}` segundos para usar o comando novamente.**'.format(round(h),round(min),round(sec)))						
+           await ctx.send('**Espere `{0}` horas `{1}` minutos  e `{2}` segundos para pegar sua daily novamente.**'.format(round(h),round(min),round(sec)))						
 
 @bot.command(pass_context=True)
 @commands.cooldown(1, 60*60*2, commands.BucketType.user)
 async def rep(ctx, user: discord.User=None):
 	if user is None:
 		return await ctx.send('Você deve mencionar um usuário')
+		ctx.command.reset_cooldown(ctx)
+	if user == ctx.author:
+		return await ctx.send(f'{user.mention} Você não pode dar reputações a você mesmo')
+		ctx.command.reset_cooldown(ctx)
 	else:
 		try:
-			mongo = MongoClient(url)          
+			mongo = MongoClient(url)
 			tutorial = mongo["tutorial"]
 			rpg = tutorial["rpg"]
 			rpg = tutorial.rpg.find_one({"_id":str(user.id)})
@@ -314,8 +232,8 @@ async def rep(ctx, user: discord.User=None):
 			else:
 				reps = 1
 				moedas = int(rpg["reps"])+ int(reps)
-				tutorial.rpg.update_one({"_id":str(ctx.author.id)}, {"$set":{"reps":int(reps)}})
-				await ctx.send(f"✔ {ctx.author.mention}, você deu `1` reputações para {user.mention} Agora ele tem um total de `{reps}` reputações.")
+				tutorial.rpg.update_one({"_id":str(user.id)}, {"$set":{"reps":int(moedas)}})
+				await ctx.send(f"🥈 {ctx.author.mention}, você deu `1` reputações para {user.mention} Agora ele tem um total de `{reps}` reputações.")
 		except Exception as e:
 			await ctx.send(f"[Erro] {e}")
 @rep.error
@@ -328,6 +246,35 @@ async def rep_error(ctx,error):
        else:
            await ctx.send('**Espere `{0}` horas `{1}` minutos  e `{2}` segundos para usar o comando novamente.**'.format(round(h),round(min),round(sec)))						
 
+@bot.command(pass_context=True, aliases=['pagar','transferir'])
+async def pay(ctx, user: discord.User=None, amount: int=None):
+	if user is None:
+		return await ctx.send(f'{ctx.author.mention} Você deve mencionar um usuário')
+	if amount is None:
+		return await ctx.send(f'{ctx.author.mention} Você deve especificar um valor')
+		
+	if user == ctx.author:
+		return await ctx.send(f'{user.mention} Não é possivel transferir ryucoins a si mesmo.')
+	
+	else:
+		try:
+			mongo = MongoClient(url)
+			tutorial = mongo["tutorial"]
+			rpg = tutorial["rpg"]
+			rpg = tutorial.rpg.find_one({"_id":str(user.id)})
+			rpga = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
+			id = ctx.author.id
+			if rpg is None:
+				await ctx.send('Você não esta registrado digite `s!registro` para se registrar')
+	
+			else:
+				
+				moedas = int(rpg["coins"])+ int(amount)
+				moedas = int(rpga["coins"])- int(amount)
+				tutorial.rpg.update_one({"_id":str(user.id)}, {"$set":{"reps":int(reps)}})
+				await ctx.send(f"💸 {ctx.author.mention}, você deu `1` reputações para {user.mention} Agora ele tem um total de `{reps}` reputações.")
+		except Exception as e:
+			await ctx.send(f"[Erro] {e}")
 
 @bot.command(pass_context=True)
 @commands.cooldown(1, 60*60*4, commands.BucketType.user)
