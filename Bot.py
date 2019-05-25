@@ -112,7 +112,7 @@ async def saldo(ctx):
          rpg = tutorial["rpg"]
          rpg = tutorial.rpg.find_one({"_id":str(ctx.author.id)})
          if rpg is None:
-           await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema de coins, use !registro para se registrar!")
+           await ctx.send(f"<a:momeym:581669926809370626> {ctx.author.mention}, você não está registrado no sistema de coins, use !registro para se registrar!")
          else:
          	moedas = rpg["coins"]
          	await ctx.send(f"<a:momeym:581669926809370626> {ctx.author.mention}, você tem {moedas} RyuCoins.")
