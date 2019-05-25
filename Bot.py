@@ -676,7 +676,7 @@ async def deathnote(ctx, user: discord.User=None,*, causa: str=None):
         'seu nome escrito no Death Note de **{}**\n'
         'Causa Da Morte: **{}**'.format(user.name, ctx.message.author.name, causa), color=0xA7ffbb)
         hugemb.set_footer(text ='Comando pedido por: {} | Shiryu Bot Oficial'.format(ctx.message.author.name))
-        await ctx.send(embed=hugemb)
+        await ctx.send(embed=hugemb) 
 
 
 
