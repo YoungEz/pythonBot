@@ -252,7 +252,7 @@ async def rep_error(ctx,error):
            await ctx.send('**Espere `{0}` horas `{1}` minutos  e `{2}` segundos para usar o comando novamente.**'.format(round(h),round(min),round(sec)))
            
 @bot.command(pass_context=True, aliases=['perfil'])
-async def profile(ctx, user: discord.Member=None):
+async def profile(ctx, user: discord.User=None):
 	if user is None:
 		user = ctx.author
 	else:
@@ -280,7 +280,7 @@ async def profile(ctx, user: discord.Member=None):
 				embed.add_field(name="<a:momeym:581669926809370626> RyuCoins", value=f"{money}")
 				embed.add_field(name="😍 Estado Civil", value=f"{ship}")
 				embed.add_field(name="<:basica:5818389843515080180> Caixas", value=f"<:basica:5818389843515080180> **Caixas Basicas:** `{basica}`\n<:media:581838910754127894> **Caixas Medias:** `{media}`\n<:epica:581839027687260164> **Caixas Epicas:**`{epica}`\n<:lendaria:581839194004127764> **Caixas Lendarias**`{lendaria}`")
-			embed.add_field(name="📌 Frase", value=f"{frase}")
+			embed.add_field(name="📌 Frase", value=f"{titulo}")
 			embed.add_field(name="<:Icon_Monthly_VIP_Badge:581844119979032596> badges",value=f"{badges}")
 			embed.add_field(name="📖 Sobre", value=f"{sobremim}")
 			embed.set_thumbnail(url=user.avatar_url)
