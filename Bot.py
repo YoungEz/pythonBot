@@ -248,7 +248,7 @@ async def rep_error(ctx,error):
            await ctx.send('**Espere `{0}` horas `{1}` minutos  e `{2}` segundos para usar o comando novamente.**'.format(round(h),round(min),round(sec)))						
 
 @bot.command(pass_context=True, aliases=['pagar', 'dar', 'transferir'])
-async def pay(self, ctx, member:discord.Member=None, coins:int=None):
+async def pay(ctx, member:discord.Member=None, coins:int=None):
        try:
           mongo = MongoClient(url)
           tutorial = mongo["tutorial"]
