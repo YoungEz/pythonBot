@@ -257,8 +257,8 @@ async def pay(ctx, member:discord.User=None, coins:int=None):
           if rpg is None:
              await ctx.send(f"🎲 {ctx.author.mention}, você não está registrado no sistema, use s!registro para se registrar!")
           else:
-              moedas = int(rpg["coins"])- int(coins)
-              moedass = int(rpg["coins"]) + int(coins)
+              moedas = int(rpg["coins"])+ int(coins)
+              moedass = int(rpg["coins"]) - int(coins)
               tutorial.rpg.update_one({"_id":str(member.id)}, {"$set":{"coins":int(moedas)}})
               tutorial.rpg.update_one({"_id":str(ctx.author.id)}, {"$set":{"coins":int(moedass)}})
               await ctx.send(f"<a:money:581670005306032130> | {ctx.author.mention}, transferiu {coins} ryucoins com sucesso para {member.mention}.")
