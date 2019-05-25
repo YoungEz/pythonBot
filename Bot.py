@@ -115,7 +115,7 @@ async def saldo(ctx):
            await ctx.send(f"Olá {ctx.author.mention}, você não está registrado no sistema de coins, use !registro para se registrar!")
          else:
          	moedas = rpg["coins"]
-         	await ctx.send(f"Olá, {ctx.author.mention}, você tem {moedas} RyuCoins.")
+         	await ctx.send(f"<a:momeym:581669926809370626> {ctx.author.mention}, você tem {moedas} RyuCoins.")
        except Exception as e:
            await ctx.send(f"[Erro] {e}")
      
