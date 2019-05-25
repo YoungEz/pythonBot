@@ -258,7 +258,7 @@ async def pay(ctx, member:discord.User=None, money:int=None):
              await ctx.send(f"🎲 {ctx.author.mention}, você não está registrado no sistema, use s!registro para se registrar!")
           else:
           	reput = int(rpg["coins"])
-          	if reput - coins < 1:
+          	if reput - money < 1:
           		return await ctx.send("você não tem coins suficientes!")
           	else:
           		tutorial.rpg.update_one({"_id":str(member.id)}, {"$set":{"coins":int(reput) + money}})
