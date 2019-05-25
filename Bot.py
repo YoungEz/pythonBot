@@ -260,8 +260,8 @@ async def pay(ctx, member:discord.User=None, money:int=None):
           	
               moedas = int(rpg["coins"]) + int(money)
               moedass = int(rpg["coins"]) - int(money)
-              if moedas - money < 0:
-              	return await ctx.send("você não tem coins suficientes!")
+              if moedass - money < 0:
+              	return await ctx.send(f"{ctx.author.mention} você não tem coins suficientes!")
               else:
               	coin = money
               	reput = int(rpg["coins"])+ int(coin)
