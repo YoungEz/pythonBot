@@ -131,7 +131,7 @@ async def learderboard(ctx):
 		mongo = MongoClient(url)
 		tutorial = mongo["tutorial"]
 		rpg = tutorial["rpg"]
-		sort = tutorial.find().limit(10).sort('coins', -1)
+		sort = rpg.find().limit(10).sort('coins', -1)
 		users = []
 		rank = ""
 		for d in sort:
