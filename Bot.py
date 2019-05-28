@@ -1066,7 +1066,7 @@ async def config(ctx):
 				else:
 				
 					cn = bot.get_channel(canalwel)
-					canal = ctx.cn.mention
+					canal = cn.mention
 				
 					
 				if canalbye is None:
